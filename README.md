@@ -42,4 +42,24 @@ sudo apt install -y \
   v4l-utils
 ```
 
+Python 虚拟环境安装以及机械臂 PiPER SDK安装
 
+```bash
+mkdir -p ~/venvs
+python3 -m venv ~/venvs/piper_dual
+
+source ~/venvs/piper_dual/bin/activate
+
+python -m pip install --upgrade pip setuptools wheel
+
+pip install piper_sdk
+```
+
+SDK安装验证
+
+```bash
+python - <<'PY'
+from piper_sdk import *
+print("piper_sdk import OK")
+PY
+```
