@@ -62,3 +62,20 @@ from piper_sdk import *
 print("piper_sdk import OK")
 PY
 ```
+
+主程序ms.py完整使用流程
+
+```bash
+#1.启动环境
+cd ~/piper
+source ~/venvs/piper_dual/bin/activate
+
+#2.查看can口
+python ms.py find
+
+#3.启动can口（确认主从臂can口型号）
+python ms.py start --master-can can0 --slave-can can1
+
+#4.读取双臂状态(确认两边都能读到真实关节角)
+python ms.py read --master-can can0 --slave-can can1
+```
