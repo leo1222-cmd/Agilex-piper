@@ -140,7 +140,7 @@ python ms.py follow \
 
 ## 3、常见文件解决方案
 
-### Jetson 官方 USB-CAN 驱动问题
+### ①.Jetson 官方 USB-CAN 驱动问题
 
 在 Jetson 上，PiPER 官方 USB-CAN 可能只能通过 lsusb 被识别，但不会自动生成 can1 SocketCAN 接口。典型现象是：lsusb 能看到 1d50:606f OpenMoko, Inc. Geschwister Schneider CAN adapter，但 ip -br link 里只有 Jetson 板载 CAN，没有官方 USB-CAN 对应的接口。这个问题通常是因为 Jetson 定制内核未包含 gs_usb 驱动模块。
 
