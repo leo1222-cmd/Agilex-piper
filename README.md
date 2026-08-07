@@ -144,4 +144,95 @@ python ms.py follow \
 
 在 Jetson 上，PiPER 官方 USB-CAN 可能只能通过 lsusb 被识别，但不会自动生成 can1 SocketCAN 接口。典型现象是：lsusb 能看到 1d50:606f OpenMoko, Inc. Geschwister Schneider CAN adapter，但 ip -br link 里只有 Jetson 板载 CAN，没有官方 USB-CAN 对应的接口。这个问题通常是因为 Jetson 定制内核未包含 gs_usb 驱动模块。
 
+#### 本项目使用的系统为：
+```bash
+cat /etc/nv_tegra_release
+uname -r
+```
 
+#### 当前环境：
+```bash
+L4T: R35.3.1
+Kernel: 5.10.104-tegra
+```
+
+#### 编译 gs_usb.ko
+
+```bash
+#1.下载与当前系统版本匹配的 NVIDIA L4T 源码，并解压：
+mkdir -p ~/jetson_kernel
+cd ~/jetson_kernel
+
+# R35.3.1 对应源码包
+wget -O public_sources.tbz2 \
+  "https://developer.nvidia.com/downloads/embedded/l4t/r35_release_v3.1/sources/public_sources.tbz2"
+
+tar -xf public_sources.tbz2
+
+cd ~/jetson_kernel/Linux_for_Tegra/source/public
+tar -xf kernel_src.tbz2
+
+#2.进入内核源码目录：
+cd ~/jetson_kernel/Linux_for_Tegra/source/public/kernel/kernel-5.10
+
+#3.导入当前系统内核配置：
+sudo modprobe configs 2>/dev/null || true
+zcat /proc/config.gz > .config
+
+#4.设置内核版本后缀：
+./scripts/config --set-str LOCALVERSION "-tegra"
+./scripts/config --disable LOCALVERSION_AUTO
+
+#5.打开 CAN 相关模块：
+./scripts/config --module CAN
+./scripts/config --module CAN_RAW
+./scripts/config --module CAN_DEV
+./scripts/config --module CAN_GS_USB
+
+make olddefconfig
+
+#6.检查配置
+grep -E "CONFIG_CAN_GS_USB|CONFIG_CAN_DEV|CONFIG_CAN_RAW|CONFIG_CAN=|CONFIG_LOCALVERSION|CONFIG_LOCALVERSION_AUTO" .config
+
+应看到：
+CONFIG_LOCALVERSION="-tegra"
+# CONFIG_LOCALVERSION_AUTO is not set
+CONFIG_CAN=m
+CONFIG_CAN_RAW=m
+CONFIG_CAN_DEV=m
+CONFIG_CAN_GS_USB=m
+
+#7.编译模块：
+make -j$(nproc) modules_prepare
+make -j$(nproc) M=drivers/net/can/usb modules
+
+#8.检查模块版本：
+modinfo drivers/net/can/usb/gs_usb.ko | grep vermagic
+uname -r
+
+两者应一致，例如：
+5.10.104-tegra
+
+#9.安装并加载模块：
+sudo mkdir -p /lib/modules/$(uname -r)/kernel/drivers/net/can/usb
+
+sudo cp drivers/net/can/usb/gs_usb.ko \
+  /lib/modules/$(uname -r)/kernel/drivers/net/can/usb/
+
+sudo depmod -a
+sudo modprobe gs_usb
+
+#10.检查：
+lsmod | grep gs_usb
+modinfo gs_usb | head
+
+#11.设置开机自动加载：
+echo gs_usb | sudo tee /etc/modules-load.d/gs_usb.conf
+sudo depmod -a
+
+#12.重新插拔 USB-CAN 后检查：
+ip -br link
+正常应出现：
+can0 DOWN
+can1 DOWN
+```
