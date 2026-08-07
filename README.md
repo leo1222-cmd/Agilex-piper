@@ -112,3 +112,28 @@ python ms.py follow \
 --mirror 1,1,1,1,1,1 \
 --joint-offset-deg 0,0,0,0,0,0
 ```
+
+#### 相对位置跟随
+```bash
+python ms.py follow \
+--master-can can0 \
+--slave-can can1 \
+--follow-mode relative \
+--speed 15 \
+--rate 25 \
+--scale 1.0 \
+--alpha 0.35 \
+--max-delta-deg 100 \
+--max-step-deg 3.0 \
+--master-deadband-deg 0.12 \
+--cmd-deadband-deg 0.08 \
+--sync-gripper \
+--gripper-source fb \
+--gripper-min 10000 \
+--gripper-max 60000 \
+--gripper-scale 1.235 \
+--gripper-offset -12716 \
+--gripper-effort 1000 \
+--gripper-debug \
+--mirror 1,1,1,1,1,1
+```
