@@ -1,7 +1,7 @@
 # Agilex-piper
 松灵piper主从协同+视觉定位
 
-## 1.PiPER Dual-Arm Master-Slave Control on Jetson
+## 1.PiPER Dual-Arm Master-Slave Control on Jetson(在jetson上实现双臂主从控制)
 
 ### 项目简介
 
