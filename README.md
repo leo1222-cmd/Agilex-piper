@@ -236,3 +236,49 @@ ip -br link
 can0 DOWN
 can1 DOWN
 ```
+## 4、相关参数说明
+
+### 主从控制中
+```bash
+--master-can
+主臂 CAN 接口。本项目为 can0。
+
+--slave-can
+从臂 CAN 接口。本项目为 can1。
+
+--follow-mode absolute
+绝对位置跟随。从臂目标关节角 = 主臂当前关节角 + joint offset。
+
+--speed
+PiPER 底层运动速度等级。越大响应越快，初次测试建议 8～15。
+
+--rate
+Python 控制循环频率，单位 Hz。
+
+--alpha
+平滑系数。越大响应越快，越小越稳。
+
+--max-step-deg
+每个控制周期单关节最大变化角度。该参数直接影响跟随速度和安全性。
+
+--cmd-deadband-deg
+命令死区，小于该角度变化不发送控制命令，用于减少抖动。
+
+--sync-gripper
+开启夹爪同步。
+
+--gripper-source fb
+使用主臂夹爪反馈值作为从臂夹爪输入。
+
+--gripper-scale
+主臂夹爪反馈到从臂夹爪目标的比例系数。
+
+--gripper-offset
+主臂夹爪反馈到从臂夹爪目标的偏置量。
+
+--mirror
+六个关节方向映射。1 表示方向一致，-1 表示反向。
+
+--joint-offset-deg
+从臂相对主臂的关节偏置。
+```
