@@ -20,7 +20,7 @@
 
 ### 具体步骤
 
-基础工具安装
+#### 基础工具安装
 
 ```bash
 sudo apt update
@@ -41,7 +41,7 @@ sudo apt install -y \
   v4l-utils
 ```
 
-Python 虚拟环境安装以及机械臂 PiPER SDK安装
+#### Python 虚拟环境安装以及机械臂 PiPER SDK安装
 
 ```bash
 mkdir -p ~/venvs
@@ -54,7 +54,7 @@ python -m pip install --upgrade pip setuptools wheel
 pip install piper_sdk
 ```
 
-SDK安装验证
+#### SDK安装验证
 
 ```bash
 python - <<'PY'
@@ -63,7 +63,7 @@ print("piper_sdk import OK")
 PY
 ```
 
-主程序ms.py完整使用流程
+#### can口启动与机械臂状态确认
 
 ```bash
 #1.启动环境
@@ -78,4 +78,37 @@ python ms.py start --master-can can0 --slave-can can1
 
 #4.读取双臂状态(确认两边都能读到真实关节角)
 python ms.py read --master-can can0 --slave-can can1
+```
+
+#### 绝对位置跟随
+
+```bash
+#1.摆好主臂位置，让从臂对齐主臂
+python ms.py align-slave-to-master \
+--master-can can0 \
+--slave-can can1 \
+--speed 8 \
+--rate 20 \
+--step-deg 0.8 \
+--tol-deg 0.3
+
+#2.启动绝对跟随
+python ms.py follow \
+--master-can can0 \
+--slave-can can1 \
+--follow-mode absolute \
+--speed 16 \
+--rate 30 \
+--alpha 0.45 \
+--max-step-deg 3.5 \
+--cmd-deadband-deg 0.05 \
+--sync-gripper \
+--gripper-source fb \
+--gripper-min 10000 \
+--gripper-max 60000 \
+--gripper-scale 1.235 \
+--gripper-offset -12716 \
+--gripper-effort 1000 \
+--mirror 1,1,1,1,1,1 \
+--joint-offset-deg 0,0,0,0,0,0
 ```
