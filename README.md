@@ -79,7 +79,7 @@ sudo apt install -y \
   v4l-utils
 ```
 
-### 其中
+#### 其中
 
 ```bash
 python3-venv              创建 Python 虚拟环境
@@ -104,7 +104,7 @@ python -m pip install --upgrade pip setuptools wheel
 pip install piper_sdk
 ```
 
-### SDK安装验证
+#### SDK安装验证
 
 ```bash
 python - <<'PY'
@@ -125,7 +125,7 @@ pip install pyrealsense2
 pip install opencv-contrib-python
 ```
 
-### 视觉环境验证
+#### 视觉环境验证
 
 验证 OpenCV、ArUco、numpy 和 RealSense 是否可用：
 
