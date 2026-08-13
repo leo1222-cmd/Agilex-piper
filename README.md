@@ -1,7 +1,24 @@
-# Agilex-piper
-松灵piper主从协同+视觉定位
+# Agilex-piper主从协同 + ArUco 辅助自动夹取系统
 
-## 数据库结构
+本项目面向医疗/实验室场景中的试剂夹取任务，构建了一套基于 **PiPER 双机械臂主从控制、RealSense 深度相机、ArUco 视觉识别、关节角示教复现与夹爪控制** 的半自动化夹取系统。
+
+系统采用“一臂主控、一臂执行”的工作方式：操作者通过主动臂将从动臂引导至目标附近，相机实时显示 ArUco 识别结果；当识别到指定 ArUco 码后，系统可以根据预先保存的示教数据，自动控制从动臂运行到对应夹取位置，完成夹爪闭合，并回到暂停主从时的位置，再恢复主从控制。
+
+当前版本采用 **固定关节角复现 + ArUco 到位校验** 的方案，暂不使用连续视觉伺服控制。
+
+## Software Environment
+
+```bash
+Ubuntu 22.04
+Python 3.10
+piper_sdk
+python-can
+pyrealsense2
+opencv-contrib-python
+numpy
+```
+
+## Repository Structure
 
 ```bash
 piper/
@@ -12,7 +29,7 @@ piper/
 ├── teach_grasp_full_pose.py             # 完整示教
 ├── taught_full_grasp_poses.json         # 示教数据
 │
-├── tools_debug/                         #检测库
+├── tools_debug/ 
 │   ├── go_to_grasp_joint_test.py
 │   ├── camera_view.py
 │   ├── aruco_detect_realsense.py
@@ -25,11 +42,23 @@ piper/
 │   ├── aruco_target_locator.py
 ```
 
-## 快速入门
+## 核心文件说明：
+
+```bash
+piper_operator_panel.py          #总控脚本，负责主从控制、相机显示、ID 选择、自动夹取和恢复主从
+task_targets.json                #任务配置文件，管理不同 ArUco ID 对应的示教数据和夹爪参数
+ms.py                            #底层主从控制脚本，负责对齐和主从跟随
+auto_grasp_by_joint_replay.py    #自动夹取脚本，负责关节角复现、ArUco 校验、夹爪闭合和回位
+teach_grasp_full_pose.py         #完整示教脚本，用于保存不同 ID 的夹取示教数据
+taught_full_grasp_poses.json     #示教数据文件，保存 ArUco 位姿、关节角、末端位姿等信息
+go_to_grasp_joint_test.py        #关节复现测试脚本，用于验证示教数据是否可用
+```
+
+## Quick Start
 
 ### 前期准备
 
-安装所需的基础工具和功能包
+本项目运行前需要完成基础工具安装、Python 虚拟环境创建、PiPER SDK 安装、RealSense 相机依赖安装以及功能验证。
 
 #### 基础工具安装
 
@@ -52,16 +81,28 @@ sudo apt install -y \
   v4l-utils
 ```
 
-#### Python 虚拟环境安装以及机械臂 PiPER SDK安装
+#### 其中
+
+```bash
+python3-venv              创建 Python 虚拟环境
+python3-pip	              安装 Python 功能包
+can-utils	                CAN 口调试，例如 candump、cansend
+net-tools/ethtool	        网络与 CAN 设备状态查看
+git	                      代码管理
+build-essential	          编译基础工具
+bc、flex、bison、libssl-dev、libelf-dev	后续如需编译内核模块或驱动时使用
+v4l-utils	      查看 USB 相机设备，例如 v4l2-ctl --list-devices
+```
+#### Python 虚拟环境创建以及机械臂 PiPER SDK安装
+
+建议所有 Python 脚本都在独立虚拟环境中运行，避免污染系统环境。
 
 ```bash
 mkdir -p ~/venvs
 python3 -m venv ~/venvs/piper_dual
-
 source ~/venvs/piper_dual/bin/activate
 
 python -m pip install --upgrade pip setuptools wheel
-
 pip install piper_sdk
 ```
 
@@ -73,6 +114,81 @@ from piper_sdk import *
 print("piper_sdk import OK")
 PY
 ```
+
+#### RealSense 相机与视觉功能包安装
+
+本项目使用 Intel RealSense D435i 深度相机，并使用 OpenCV 的 ArUco 模块进行二维码识别。
+
+```bash
+source ~/venvs/piper_dual/bin/activate
+
+pip install numpy
+pip install pyrealsense2
+pip install opencv-contrib-python
+```
+
+#### 视觉环境验证
+
+验证 OpenCV、ArUco、numpy 和 RealSense 是否可用：
+
+```bash
+source ~/venvs/piper_dual/bin/activate
+
+python - <<'PY'
+import cv2
+import numpy as np
+
+print("opencv:", cv2.__version__)
+print("has aruco:", hasattr(cv2, "aruco"))
+print("numpy:", np.__version__)
+
+try:
+    import pyrealsense2 as rs
+    print("pyrealsense2 OK")
+except Exception as e:
+    print("pyrealsense2 import failed:", e)
+PY
+```
+正常情况下应看到类似：
+
+```bash
+opencv: x.x.x
+has aruco: True
+numpy: x.x.x
+pyrealsense2 OK
+```
+
+#### 相机画面测试
+
+进入项目目录后运行：
+```bash
+cd ~/piper/tools_debug
+source ~/venvs/piper_dual/bin/activate
+
+python camera_view.py
+```
+如果能正常弹出 RealSense 实时画面，说明相机读取正常。
+
+#### ArUco 识别测试
+
+当前项目使用的 ArUco 参数为：
+```bash
+字典类型：4x4_50
+marker_id：0，后续可扩展为 1、2、3...
+黑色编码区域边长：0.032 m
+```
+
+运行识别测试：
+```bash
+cd ~/piper/tools_debug
+source ~/venvs/piper_dual/bin/activate
+
+python aruco_detect_realsense.py \
+  --marker-size-m 0.032 \
+  --dict 4x4_50 \
+  --marker-id 0
+```
+如果相机画面中能识别到 ArUco 码，并显示对应 ID 和坐标轴，说明视觉识别功能正常。
 
 ### 一键启动主从控制、相机定位识别ArUco码
 
