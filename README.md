@@ -57,6 +57,7 @@ go_to_grasp_joint_test.py        #关节复现测试脚本，用于验证示教�
 ## Documentation
 
 - **[前期准备与验证](Documents/README1.md)** - 基础工具安装、Python 虚拟环境创建、PiPER SDK 安装、RealSense 相机依赖安装以及功能验证
+- **[项目拆分1——机械臂主从控制](Documents/README2.md)** - 详细介绍piper机械臂主从控制流程
 
 ## Quick Start
 
