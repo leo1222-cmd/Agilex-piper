@@ -57,7 +57,7 @@ go_to_grasp_joint_test.py        #关节复现测试脚本，用于验证示教�
 ## Documentation
 
 - **[前期准备与验证](Documents/README1.md)** - 基础工具安装、Python 虚拟环境创建、PiPER SDK 安装、RealSense 相机依赖安装以及功能验证
-- **[项目拆分1——机械臂主从控制](Documents/README2.md)** - 详细介绍piper机械臂主从控制流程
+- **[机械臂主从控制详情](Documents/README2.md)** - 详细介绍piper机械臂主从控制流程
 
 ## Quick Start
 
@@ -86,100 +86,6 @@ source ~/venvs/piper_dual/bin/activate
 python piper_operator_panel.py
 ```
 如果提示按 Enter 确认安全，则按 Enter 继续。
-
-## 项目拆分：1、在jetson上实现双臂主从控制；2、相机识别定位；
-
-### PiPER Dual-Arm Master-Slave Control on Jetson(在jetson上实现双臂主从控制)
-
-本项目实现了在 Jetson Orin Nano 平台上的 PiPER 双机械臂主从协同控制。系统采用两台 PiPER 六自由度机械臂，其中一台作为主臂，另一台作为从臂。主臂保持示教/手动操作状态，程序只读取主臂关节角和夹爪反馈；从臂进入 CAN 控制模式，实时跟随主臂关节运动，并同步执行夹爪开合动作。
-
-### 当前项目已实现：
-- Jetson Orin Nano 上 USB-CAN 驱动适配
-- gs_usb.ko 驱动编译与加载
-- SocketCAN 接口 can0 / can1 启动
-- PiPER SDK 环境搭建
-- 主臂关节角读取
-- 从臂 CAN 控制
-- 主从绝对位置跟随
-- 主臂夹爪反馈同步控制从臂夹爪
-- 从臂对齐主臂姿态
-
-### 具体步骤
-
-#### can口启动与机械臂状态确认
-
-```bash
-#1.启动环境
-cd ~/piper
-source ~/venvs/piper_dual/bin/activate
-
-#2.查看can口
-python ms.py find
-
-#3.启动can口（确认主从臂can口型号）
-python ms.py start --master-can can0 --slave-can can1
-
-#4.读取双臂状态(确认两边都能读到真实关节角)
-python ms.py read --master-can can0 --slave-can can1
-```
-
-#### 绝对位置跟随
-
-```bash
-#1.摆好主臂位置，让从臂对齐主臂
-python ms.py align-slave-to-master \
---master-can can0 \
---slave-can can1 \
---speed 8 \
---rate 20 \
---step-deg 0.8 \
---tol-deg 0.3
-
-#2.启动绝对跟随
-python ms.py follow \
---master-can can0 \
---slave-can can1 \
---follow-mode absolute \
---speed 16 \
---rate 30 \
---alpha 0.45 \
---max-step-deg 3.5 \
---cmd-deadband-deg 0.05 \
---sync-gripper \
---gripper-source fb \
---gripper-min 10000 \
---gripper-max 60000 \
---gripper-scale 1.235 \
---gripper-offset -12716 \
---gripper-effort 1000 \
---mirror 1,1,1,1,1,1 \
---joint-offset-deg 0,0,0,0,0,0
-```
-
-#### 相对位置跟随
-```bash
-python ms.py follow \
---master-can can0 \
---slave-can can1 \
---follow-mode relative \
---speed 15 \
---rate 25 \
---scale 1.0 \
---alpha 0.35 \
---max-delta-deg 100 \
---max-step-deg 3.0 \
---master-deadband-deg 0.12 \
---cmd-deadband-deg 0.08 \
---sync-gripper \
---gripper-source fb \
---gripper-min 10000 \
---gripper-max 60000 \
---gripper-scale 1.235 \
---gripper-offset -12716 \
---gripper-effort 1000 \
---gripper-debug \
---mirror 1,1,1,1,1,1
-```
 
 ## 3、常见文件解决方案
 
