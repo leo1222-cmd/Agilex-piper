@@ -54,13 +54,11 @@ taught_full_grasp_poses.json     #示教数据文件，保存 ArUco 位姿、关
 go_to_grasp_joint_test.py        #关节复现测试脚本，用于验证示教数据是否可用
 ```
 
-## Quick Start
-
-### 前期准备
+## 前期准备与验证
 
 本项目运行前需要完成基础工具安装、Python 虚拟环境创建、PiPER SDK 安装、RealSense 相机依赖安装以及功能验证。
 
-#### 基础工具安装
+### 基础工具安装
 
 ```bash
 sudo apt update
@@ -81,7 +79,7 @@ sudo apt install -y \
   v4l-utils
 ```
 
-#### 其中
+### 其中
 
 ```bash
 python3-venv              创建 Python 虚拟环境
@@ -93,7 +91,7 @@ build-essential	          编译基础工具
 bc、flex、bison、libssl-dev、libelf-dev	后续如需编译内核模块或驱动时使用
 v4l-utils	      查看 USB 相机设备，例如 v4l2-ctl --list-devices
 ```
-#### Python 虚拟环境创建以及机械臂 PiPER SDK安装
+### Python 虚拟环境创建以及机械臂 PiPER SDK安装
 
 建议所有 Python 脚本都在独立虚拟环境中运行，避免污染系统环境。
 
@@ -106,7 +104,7 @@ python -m pip install --upgrade pip setuptools wheel
 pip install piper_sdk
 ```
 
-#### SDK安装验证
+### SDK安装验证
 
 ```bash
 python - <<'PY'
@@ -115,7 +113,7 @@ print("piper_sdk import OK")
 PY
 ```
 
-#### RealSense 相机与视觉功能包安装
+### RealSense 相机与视觉功能包安装
 
 本项目使用 Intel RealSense D435i 深度相机，并使用 OpenCV 的 ArUco 模块进行二维码识别。
 
@@ -127,7 +125,7 @@ pip install pyrealsense2
 pip install opencv-contrib-python
 ```
 
-#### 视觉环境验证
+### 视觉环境验证
 
 验证 OpenCV、ArUco、numpy 和 RealSense 是否可用：
 
@@ -158,7 +156,7 @@ numpy: x.x.x
 pyrealsense2 OK
 ```
 
-#### 相机画面测试
+### 相机画面测试
 
 进入项目目录后运行：
 ```bash
@@ -169,7 +167,7 @@ python camera_view.py
 ```
 如果能正常弹出 RealSense 实时画面，说明相机读取正常。
 
-#### ArUco 识别测试
+### ArUco 识别测试
 
 当前项目使用的 ArUco 参数为：
 ```bash
@@ -190,15 +188,37 @@ python aruco_detect_realsense.py \
 ```
 如果相机画面中能识别到 ArUco 码，并显示对应 ID 和坐标轴，说明视觉识别功能正常。
 
-### 一键启动主从控制、相机定位识别ArUco码
+## Quick Start
 
+### 1、启动 CAN
+
+系统初次开启或重启后 CAN 口未启动，需要先执行：
 ```bash
-
+sudo ip link set can0 type can bitrate 1000000
+sudo ip link set can1 type can bitrate 1000000
+sudo ip link set can0 txqueuelen 1000 up
+sudo ip link set can1 txqueuelen 1000 up
 ```
 
-## 1.PiPER Dual-Arm Master-Slave Control on Jetson(在jetson上实现双臂主从控制)
+检查 CAN 状态：
+```bash
+ip -br link
+ip -details link show can0
+ip -details link show can1
+```
 
-### 项目简介
+### 2、一键启动
+
+```bash
+cd ~/piper
+source ~/venvs/piper_dual/bin/activate
+python piper_operator_panel.py
+```
+如果提示按 Enter 确认安全，则按 Enter 继续。
+
+## 项目拆分：1、在jetson上实现双臂主从控制；2、相机识别定位；
+
+### PiPER Dual-Arm Master-Slave Control on Jetson(在jetson上实现双臂主从控制)
 
 本项目实现了在 Jetson Orin Nano 平台上的 PiPER 双机械臂主从协同控制。系统采用两台 PiPER 六自由度机械臂，其中一台作为主臂，另一台作为从臂。主臂保持示教/手动操作状态，程序只读取主臂关节角和夹爪反馈；从臂进入 CAN 控制模式，实时跟随主臂关节运动，并同步执行夹爪开合动作。
 
@@ -212,8 +232,6 @@ python aruco_detect_realsense.py \
 - 主从绝对位置跟随
 - 主臂夹爪反馈同步控制从臂夹爪
 - 从臂对齐主臂姿态
-
-
 
 ### 具体步骤
 
