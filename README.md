@@ -42,7 +42,7 @@ piper/
 │   ├── aruco_target_locator.py
 ```
 
-## 核心文件说明：
+## Core document explanation：
 
 ```bash
 piper_operator_panel.py          #总控脚本，负责主从控制、相机显示、ID 选择、自动夹取和恢复主从
