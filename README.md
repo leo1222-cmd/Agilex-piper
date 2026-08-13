@@ -1,24 +1,35 @@
 # Agilex-piper
 松灵piper主从协同+视觉定位
 
-## 1.PiPER Dual-Arm Master-Slave Control on Jetson(在jetson上实现双臂主从控制)
+## 数据库结构
 
-### 项目简介
+```bash
+piper/
+├── piper_operator_panel.py              # 一键运行
+├── task_targets.json                    # 任务配置
+├── ms.py                                # 主从底层控制
+├── auto_grasp_by_joint_replay.py        # 自动夹取执行
+├── teach_grasp_full_pose.py             # 完整示教
+├── taught_full_grasp_poses.json         # 示教数据
+│
+├── tools_debug/                         #检测库
+│   ├── go_to_grasp_joint_test.py
+│   ├── camera_view.py
+│   ├── aruco_detect_realsense.py
+│   ├── inspect_endpose.py
+│   ├── piper_slave_cartesian_jog_test.py
+│
+├── archive_old/
+│   ├── visual_servo_align.py
+│   ├── teach_marker_pose.py
+│   ├── aruco_target_locator.py
+```
 
-本项目实现了在 Jetson Orin Nano 平台上的 PiPER 双机械臂主从协同控制。系统采用两台 PiPER 六自由度机械臂，其中一台作为主臂，另一台作为从臂。主臂保持示教/手动操作状态，程序只读取主臂关节角和夹爪反馈；从臂进入 CAN 控制模式，实时跟随主臂关节运动，并同步执行夹爪开合动作。
-
-### 当前项目已实现：
-- Jetson Orin Nano 上 USB-CAN 驱动适配
-- gs_usb.ko 驱动编译与加载
-- SocketCAN 接口 can0 / can1 启动
-- PiPER SDK 环境搭建
-- 主臂关节角读取
-- 从臂 CAN 控制
-- 主从绝对位置跟随
-- 主臂夹爪反馈同步控制从臂夹爪
-- 从臂对齐主臂姿态
+## 快速入门
 
 ### 前期准备
+
+安装所需的基础工具和功能包
 
 #### 基础工具安装
 
@@ -62,6 +73,31 @@ from piper_sdk import *
 print("piper_sdk import OK")
 PY
 ```
+
+### 一键启动主从控制、相机定位识别ArUco码
+
+```bash
+
+```
+
+## 1.PiPER Dual-Arm Master-Slave Control on Jetson(在jetson上实现双臂主从控制)
+
+### 项目简介
+
+本项目实现了在 Jetson Orin Nano 平台上的 PiPER 双机械臂主从协同控制。系统采用两台 PiPER 六自由度机械臂，其中一台作为主臂，另一台作为从臂。主臂保持示教/手动操作状态，程序只读取主臂关节角和夹爪反馈；从臂进入 CAN 控制模式，实时跟随主臂关节运动，并同步执行夹爪开合动作。
+
+### 当前项目已实现：
+- Jetson Orin Nano 上 USB-CAN 驱动适配
+- gs_usb.ko 驱动编译与加载
+- SocketCAN 接口 can0 / can1 启动
+- PiPER SDK 环境搭建
+- 主臂关节角读取
+- 从臂 CAN 控制
+- 主从绝对位置跟随
+- 主臂夹爪反馈同步控制从臂夹爪
+- 从臂对齐主臂姿态
+
+
 
 ### 具体步骤
 
