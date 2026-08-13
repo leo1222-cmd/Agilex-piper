@@ -54,6 +54,10 @@ taught_full_grasp_poses.json     #示教数据文件，保存 ArUco 位姿、关
 go_to_grasp_joint_test.py        #关节复现测试脚本，用于验证示教数据是否可用
 ```
 
+## Documentation
+
+- **[前期准备与验证](src/holosoma/README.md)** - 基础工具安装、Python 虚拟环境创建、PiPER SDK 安装、RealSense 相机依赖安装以及功能验证
+
 ## 前期准备与验证
 
 本项目运行前需要完成基础工具安装、Python 虚拟环境创建、PiPER SDK 安装、RealSense 相机依赖安装以及功能验证。
