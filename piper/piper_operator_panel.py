@@ -316,6 +316,12 @@ def build_grasp_cmd(config, target_id, target_cfg):
         "--auto",
     ]
 
+    post_waypoints = target_cfg.get("post_waypoints", [])
+    if isinstance(post_waypoints, list) and post_waypoints:
+        cmd += ["--post-waypoints", ",".join(post_waypoints)]
+    elif isinstance(post_waypoints, str) and post_waypoints.strip():
+        cmd += ["--post-waypoints", post_waypoints.strip()]
+
     return cmd
 
 
