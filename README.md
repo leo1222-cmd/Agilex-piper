@@ -58,6 +58,7 @@ go_to_grasp_joint_test.py        #关节复现测试脚本，用于验证示教�
 
 - **[前期准备与验证](Documents/README1.md)** - 基础工具安装、Python 虚拟环境创建、PiPER SDK 安装、RealSense 相机依赖安装以及功能验证
 - **[机械臂主从控制详情](Documents/README2.md)** - 详细介绍piper机械臂主从控制流程
+- **[相机识别定位](Documents/README3.md)** - 详细介绍相机识别定位、夹爪夹取全流程
 
 ## Quick Start
 
@@ -87,7 +88,7 @@ python piper_operator_panel.py
 ```
 如果提示按 Enter 确认安全，则按 Enter 继续。
 
-## 3、常见文件解决方案
+## 常见文件解决方案
 
 ### （1）Jetson 官方 USB-CAN 驱动问题
 
@@ -185,7 +186,7 @@ ip -br link
 can0 DOWN
 can1 DOWN
 ```
-## 4、相关参数说明
+## 相关参数说明
 
 ### 主从控制
 ```bash
