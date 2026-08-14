@@ -1,0 +1,122 @@
+{
+  "teach_reagent_grasp_pose_fixed": {
+    "pose_name": "teach_reagent_grasp_pose_fixed",
+    "timestamp": 1786610708.9294014,
+    "dict": "4x4_50",
+    "marker_id": 0,
+    "marker_size_m": 0.032,
+    "marker_camera_xyz_m": [
+      0.016658541188775956,
+      -0.003047995357293603,
+      0.26114986689336894
+    ],
+    "marker_camera_xyz_mm": [
+      16.658541188775956,
+      -3.047995357293603,
+      261.14986689336894
+    ],
+    "marker_camera_rvec": [
+      2.0611584634760196,
+      -2.2259336526440614,
+      0.19557456036919538
+    ],
+    "center_pixel": [
+      359,
+      240
+    ],
+    "std_marker_xyz_m": [
+      0.00010777365560107439,
+      6.174614288591622e-05,
+      0.0005996296219378635
+    ],
+    "std_marker_xyz_mm": [
+      0.1077736556010744,
+      0.06174614288591622,
+      0.5996296219378635
+    ],
+    "std_marker_rvec": [
+      0.01920904365013561,
+      0.02235849214274517,
+      0.023474457737443794
+    ],
+    "valid_samples": 80,
+    "requested_samples": 80,
+    "slave_joint_raw": [
+      -5118,
+      62024,
+      -49317,
+      -2980,
+      69375,
+      -3478
+    ],
+    "slave_joint_deg": [
+      -5.118,
+      62.024,
+      -49.317,
+      -2.98,
+      69.375,
+      -3.478
+    ],
+    "slave_joint_text": "time stamp:1786610708.927508\nHz:200.0\nArmMsgFeedBackJointStates:\nJoint 1:-5118\nJoint 2:62024\nJoint 3:-49317\nJoint 4:-2980\nJoint 5:69375\nJoint 6:-3478\n",
+    "slave_endpose_raw": {
+      "X_axis": 172304,
+      "Y_axis": -19879,
+      "Z_axis": 290079,
+      "RX_axis": -176181,
+      "RY_axis": 12682,
+      "RZ_axis": 179519
+    },
+    "slave_endpose_mm_deg": {
+      "X_mm": 172.304,
+      "Y_mm": -19.879,
+      "Z_mm": 290.079,
+      "RX_deg": -176.181,
+      "RY_deg": 12.682,
+      "RZ_deg": 179.519
+    },
+    "slave_endpose_text": "time stamp:1786610708.9269981\nHz:200.0\nArmMsgFeedBackEndPose:\n X_axis : 172304\n Y_axis : -19879\n Z_axis : 290079\n RX_axis : -176181\n RY_axis : 12682\n RZ_axis : 179519\n",
+    "gripper": {
+      "open_mm": 60.0,
+      "close_mm": 10.0,
+      "effort": 1000
+    },
+    "camera_intrinsics": {
+      "width": 640,
+      "height": 480,
+      "fx": 604.9235229492188,
+      "fy": 604.763916015625,
+      "ppx": 321.2585754394531,
+      "ppy": 247.42063903808594,
+      "coeffs": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "teach_reagent_id0_lift_200": {
+    "pose_name": "teach_reagent_id0_lift_200",
+    "pose_type": "joint_only",
+    "timestamp": 1786622718.4381294,
+    "note": "ID0 夹取后向上抬升约200mm的关节位",
+    "slave_joint_raw": [
+      -598,
+      34085,
+      -53527,
+      -10050,
+      70362,
+      11981
+    ],
+    "slave_joint_deg": [
+      -0.598,
+      34.085,
+      -53.527,
+      -10.05,
+      70.362,
+      11.981
+    ],
+    "slave_joint_text": "time stamp:1786622718.4368377\nHz:200.0\nArmMsgFeedBackJointStates:\nJoint 1:-598\nJoint 2:34085\nJoint 3:-53527\nJoint 4:-10050\nJoint 5:70362\nJoint 6:11981\n"
+  }
+}

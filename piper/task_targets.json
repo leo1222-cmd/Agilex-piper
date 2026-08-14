@@ -1,0 +1,57 @@
+{
+  "default_target_id": 0,
+  "targets": {
+    "0": {
+      "label": "reagent_0",
+      "pose_file": "taught_full_grasp_poses.json",
+      "pose_name": "teach_reagent_grasp_pose_fixed",
+      "enabled": true,
+      "open_mm": 60,
+      "close_mm": 10,
+      "gripper_effort": 1000,
+      "xy_tol_mm": 7,
+      "z_tol_mm": 10,
+      "verify_samples": 60,
+      "lift_mm": 0,
+      "post_waypoints": [
+        "teach_reagent_id0_lift_200"
+      ]
+    }
+  },
+  "follow": {
+    "master_can": "can0",
+    "slave_can": "can1",
+    "follow_mode": "absolute",
+    "speed": 12,
+    "rate": 25,
+    "alpha": 0.3,
+    "max_step_deg": 2.0,
+    "cmd_deadband_deg": 0.08,
+    "sync_gripper": true,
+    "gripper_source": "fb",
+    "gripper_min": 10000,
+    "gripper_max": 60000,
+    "gripper_scale": 1.235,
+    "gripper_offset": -12716,
+    "gripper_effort": 1000,
+    "mirror": "1,1,1,1,1,1",
+    "joint_offset_deg": "0,0,0,0,0,0"
+  },
+  "grasp": {
+    "speed": 8,
+    "step_deg": 1.0,
+    "tol_deg": 0.3,
+    "rate": 20
+  },
+  "camera": {
+    "dict": "4x4_50",
+    "marker_size_m": 0.032
+  },
+  "align": {
+    "enabled": true,
+    "speed": 8,
+    "rate": 20,
+    "step_deg": 0.8,
+    "tol_deg": 0.3
+  }
+}
