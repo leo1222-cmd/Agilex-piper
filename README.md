@@ -88,7 +88,15 @@ ip -details link show can0
 ip -details link show can1
 ```
 
-### 2、一键启动
+### 2、确认相机正常启动
+```bash
+cd ~/piper/tools_debug
+source ~/venvs/piper_dual/bin/activate
+
+python camera_view.py
+```
+
+### 一键启动
 
 ```bash
 cd ~/piper
