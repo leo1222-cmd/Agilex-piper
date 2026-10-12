@@ -46,12 +46,12 @@ piper/
 
 ```bash
 piper_operator_panel.py          #总控脚本，负责主从控制、相机显示、ID 选择、自动夹取和恢复主从
-task_targets.json                #任务配置文件，管理不同 ArUco ID 对应的示教数据和夹爪参数
 ms.py                            #底层主从控制脚本，负责对齐和主从跟随
 auto_grasp_by_joint_replay.py    #自动夹取脚本，负责关节角复现、ArUco 校验、夹爪闭合和回位
 teach_grasp_full_pose.py         #完整示教脚本，用于保存不同 ID 的夹取示教数据
-taught_full_grasp_poses.json     #示教数据文件，保存 ArUco 位姿、关节角、末端位姿等信息
 go_to_grasp_joint_test.py        #关节复现测试脚本，用于验证示教数据是否可用
+task_targets.json                #任务配置文件，管理不同 ArUco ID 对应的示教数据和夹爪参数
+taught_full_grasp_poses.json     #示教数据文件，保存 ArUco 位姿、关节角、末端位姿等信息
 ```
 
 ## Documentation
