@@ -62,6 +62,13 @@ go_to_grasp_joint_test.py        #关节复现测试脚本，用于验证示教�
 
 ## Quick Start
 
+### 0、确认主从CAN口
+
+依次插入CAN口，确认主从臂CAN口序号
+```bash
+python ms.py find
+```
+
 ### 1、启动 CAN
 
 系统初次开启或重启后 CAN 口未启动，需要先执行：
