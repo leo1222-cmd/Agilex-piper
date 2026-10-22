@@ -1,0 +1,46 @@
+{
+  "teach_reagent_grasp_pose_fixed": {
+    "pose_name": "teach_reagent_grasp_pose_fixed",
+    "timestamp": 1792576788.1339777,
+    "marker_id": 0,
+    "slave_joint_raw": [
+      -9013,
+      143912,
+      -112832,
+      2111,
+      59196,
+      -7656
+    ],
+    "slave_joint_deg": [
+      -9.013,
+      143.912,
+      -112.832,
+      2.111,
+      59.196,
+      -7.656
+    ],
+    "slave_joint_text": "time stamp:1792576788.1318364\nHz:200.0\nArmMsgFeedBackJointStates:\nJoint 1:-9013\nJoint 2:143912\nJoint 3:-112832\nJoint 4:2111\nJoint 5:59196\nJoint 6:-7656\n",
+    "slave_endpose_raw": {
+      "X_axis": 487702,
+      "Y_axis": -74442,
+      "Z_axis": 77023,
+      "RX_axis": 178742,
+      "RY_axis": 4916,
+      "RZ_axis": 177583
+    },
+    "slave_endpose_mm_deg": {
+      "X_mm": 487.702,
+      "Y_mm": -74.442,
+      "Z_mm": 77.023,
+      "RX_deg": 178.742,
+      "RY_deg": 4.916,
+      "RZ_deg": 177.583
+    },
+    "slave_endpose_text": "time stamp:1792576788.1318295\nHz:200.0\nArmMsgFeedBackEndPose:\n X_axis : 487702\n Y_axis : -74442\n Z_axis : 77023\n RX_axis : 178742\n RY_axis : 4916\n RZ_axis : 177583\n",
+    "gripper": {
+      "open_mm": 60.0,
+      "close_mm": 10.0,
+      "effort": 1000
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "default_target_id": null,
+  "targets": {
+    "0": {
+      "label": "reagent_0",
+      "pose_file": "taught_full_grasp_poses.json",
+      "pose_name": "teach_reagent_grasp_pose_fixed",
+      "enabled": true,
+      "open_mm": 60.0,
+      "close_mm": 10.0,
+      "gripper_effort": 1000,
+      "close_wait_s": 2.0,
+      "grasp_check": {
+        "xyz_tol_mm": 3.0,
+        "rpy_tol_deg": 2.0
+      },
+      "pull": {
+        "mode": "straightish_waypoint_ik",
+        "distance_mm": 120.0,
+        "waypoint_step_mm": 10.0,
+        "speed": 4,
+        "step_deg": 0.3,
+        "final_z_tol_mm": 5.0,
+        "max_xy_drift_mm": 8.0,
+        "max_rpy_drift_deg": 8.0
+      },
+      "return": {
+        "enabled": true,
+        "mode": "reverse_pull",
+        "distance_mm": 120.0,
+        "approach_speed": 5,
+        "approach_step_deg": 0.7,
+        "insert_speed": 3,
+        "insert_step_deg": 0.25,
+        "retract_speed": 4,
+        "retract_step_deg": 0.35,
+        "tol_deg": 0.3,
+        "rate": 20,
+        "release_wait_s": 2.0,
+        "max_start_joint_error_deg": 120.0,
+        "final_z_tol_mm": 5.0,
+        "critical_xy_drift_mm": 10.0,
+        "max_xy_drift_mm": 12.0,
+        "max_rpy_drift_deg": 8.5
+      }
+    }
+  },
+  "follow": {
+    "master_can": "can0",
+    "slave_can": "can1",
+    "follow_mode": "absolute",
+    "speed": 12,
+    "rate": 25,
+    "alpha": 0.3,
+    "max_step_deg": 2.0,
+    "cmd_deadband_deg": 0.08,
+    "sync_gripper": true,
+    "gripper_source": "fb",
+    "gripper_min": 10000,
+    "gripper_max": 60000,
+    "gripper_scale": 1.235,
+    "gripper_offset": -12716,
+    "gripper_effort": 1000,
+    "mirror": "1,1,1,1,1,1",
+    "joint_offset_deg": "0,0,0,0,0,0"
+  },
+  "grasp": {
+    "speed": 8,
+    "step_deg": 1.0,
+    "tol_deg": 0.3,
+    "rate": 20
+  },
+  "camera": {
+    "dict": "4x4_50",
+    "marker_size_m": 0.032
+  },
+  "align": {
+    "enabled": true,
+    "speed": 8,
+    "rate": 20,
+    "step_deg": 0.8,
+    "tol_deg": 0.3
+  }
+}
