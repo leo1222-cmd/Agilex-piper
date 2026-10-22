@@ -229,7 +229,7 @@ def main():
     print("1. 这个脚本只读取相机、从臂关节角、从臂末端位姿，不主动控制机械臂。")
     print("2. 请先用主从控制把从臂移动到真正适合夹取试剂的位置。")
     print("3. 到位后停止主从 follow，再运行本脚本。")
-    print("4. 看到 ArUco 稳定后，按 a 保存完整示教位。")
+    print("4. 到达需要保存的位置后直接按 a；不要求 ArUco 可见。")
     print("5. 按 q 退出。")
     print("===========================================")
 
@@ -252,7 +252,7 @@ def main():
 
     dictionary, parameters, detector = create_aruco_detector(args.dict)
 
-    print("\n[INFO] 相机已启动。看到 ArUco 后按 a 保存，按 q 退出。")
+    print("\n[INFO] 相机已启动。到达需要保存的位置后按 a，按 q 退出；ArUco 可见不是保存条件。")
 
     try:
         while True:
@@ -308,7 +308,7 @@ def main():
                 )
                 cv2.putText(
                     show,
-                    "Press a to save full grasp pose",
+                    "Press a to save current pose",
                     (20, 70),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.65,
@@ -334,115 +334,51 @@ def main():
                 break
 
             if key == ord("a"):
-                print("\n[INFO] 开始采样 ArUco 位姿...")
-
-                xyz_list = []
-                rvec_list = []
-                center_list = []
-
-                for i in range(args.samples):
-                    frames = pipeline.wait_for_frames()
-                    frames = align.process(frames)
-                    color_frame = frames.get_color_frame()
-
-                    if not color_frame:
-                        continue
-
-                    color2 = np.asanyarray(color_frame.get_data())
-
-                    res, _, _ = estimate_marker_once(
-                        color=color2,
-                        camera_matrix=camera_matrix,
-                        dist_coeffs=dist_coeffs,
-                        dictionary=dictionary,
-                        parameters=parameters,
-                        detector=detector,
-                        marker_size_m=args.marker_size_m,
-                        marker_id=args.marker_id,
-                    )
-
-                    if res is not None:
-                        xyz_list.append(res["marker_camera_xyz_m"])
-                        rvec_list.append(res["marker_camera_rvec"])
-                        center_list.append(res["center_pixel"])
-
-                    time.sleep(0.01)
-
-                if len(xyz_list) == 0:
-                    print("[ERROR] 采样失败，没有检测到目标 ArUco。")
-                    continue
-
-                xyz_arr = np.array(xyz_list, dtype=np.float64)
-                rvec_arr = np.array(rvec_list, dtype=np.float64)
-                center_arr = np.array(center_list, dtype=np.float64)
-
-                marker_xyz = np.median(xyz_arr, axis=0)
-                marker_rvec = np.median(rvec_arr, axis=0)
-                center_pixel = np.median(center_arr, axis=0).astype(int).tolist()
-
-                std_xyz = np.std(xyz_arr, axis=0)
-                std_rvec = np.std(rvec_arr, axis=0)
-
+                print("\n[INFO] 保存当前从臂位姿；不要求 ArUco 可见。")
                 print("[INFO] 读取从臂关节角和末端位姿...")
+
                 slave_joint_raw, slave_joint_deg, slave_joint_text = read_slave_joint(piper)
                 slave_endpose_raw, slave_endpose_mm_deg, slave_endpose_text = read_slave_endpose(piper)
 
                 data = load_json(args.out)
-
                 record = {
                     "pose_name": args.pose_name,
                     "timestamp": time.time(),
-
-                    "dict": args.dict,
                     "marker_id": args.marker_id,
-                    "marker_size_m": args.marker_size_m,
-
-                    "marker_camera_xyz_m": marker_xyz.tolist(),
-                    "marker_camera_xyz_mm": (marker_xyz * 1000.0).tolist(),
-                    "marker_camera_rvec": marker_rvec.tolist(),
-                    "center_pixel": center_pixel,
-
-                    "std_marker_xyz_m": std_xyz.tolist(),
-                    "std_marker_xyz_mm": (std_xyz * 1000.0).tolist(),
-                    "std_marker_rvec": std_rvec.tolist(),
-                    "valid_samples": len(xyz_list),
-                    "requested_samples": args.samples,
-
                     "slave_joint_raw": slave_joint_raw,
                     "slave_joint_deg": slave_joint_deg,
                     "slave_joint_text": slave_joint_text,
-
                     "slave_endpose_raw": slave_endpose_raw,
                     "slave_endpose_mm_deg": slave_endpose_mm_deg,
                     "slave_endpose_text": slave_endpose_text,
-
                     "gripper": {
                         "open_mm": args.open_mm,
                         "close_mm": args.close_mm,
                         "effort": args.gripper_effort,
                     },
-
-                    "camera_intrinsics": {
-                        "width": intr.width,
-                        "height": intr.height,
-                        "fx": intr.fx,
-                        "fy": intr.fy,
-                        "ppx": intr.ppx,
-                        "ppy": intr.ppy,
-                        "coeffs": list(intr.coeffs),
-                    },
                 }
+
+                # 如果保存瞬间刚好还能看见 ArUco，就附带记录；看不见也不影响保存。
+                if result is not None:
+                    marker_xyz = np.array(result["marker_camera_xyz_m"], dtype=np.float64)
+                    record["marker_camera_xyz_m"] = marker_xyz.tolist()
+                    record["marker_camera_xyz_mm"] = (marker_xyz * 1000.0).tolist()
+                    record["marker_camera_rvec"] = list(result["marker_camera_rvec"])
+                    record["center_pixel"] = list(result["center_pixel"])
 
                 data[args.pose_name] = record
                 save_json(args.out, data)
 
-                print("\n[SAVED]", args.out)
+                print("\n========== SAVED POSE ==========")
+                print("file:", args.out)
                 print("pose_name:", args.pose_name)
-                print("marker_camera_xyz_mm:", record["marker_camera_xyz_mm"])
-                print("std_marker_xyz_mm:", record["std_marker_xyz_mm"])
-                print("slave_joint_deg:", record["slave_joint_deg"])
-                print("slave_endpose_mm_deg:", record["slave_endpose_mm_deg"])
-                print("valid_samples:", record["valid_samples"])
+                print("marker_id:", args.marker_id)
+                print("slave_joint_raw:", slave_joint_raw)
+                print("slave_joint_deg:", slave_joint_deg)
+                print("slave_endpose_raw:", slave_endpose_raw)
+                print("slave_endpose_mm_deg:", slave_endpose_mm_deg)
+                print("ArUco visible at save:", result is not None)
+                print("================================")
 
     finally:
         pipeline.stop()
