@@ -3,7 +3,7 @@
 - 夹取位置：`pose_name`
 - 放回位置：`return_pose_name`
 
-##1、修改某个 ID 对应夹取位置
+## 1、修改某个 ID 对应夹取位置
 ```bash
 cd ~/piper
 source ~/venvs/piper_dual/bin/activate
@@ -12,7 +12,7 @@ python teach_grasp_select_can.py（可选择can口）
 ```
 按流程保存好对应位姿
 
-##2、修改某个 ID 对应的放回位置
+## 2、修改某个 ID 对应的放回位置
 比如修改ID0：
 ```bash
 cd ~/piper
