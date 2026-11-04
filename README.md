@@ -80,8 +80,8 @@ sudo ip link set can0 type can bitrate 1000000
 sudo ip link set can0 txqueuelen 1000 up
 sudo ip link set can1 type can bitrate 1000000
 sudo ip link set can1 txqueuelen 1000 up
-或使用命令
-python ms.py start --master-can can0 --slave-can can1（注意此处的can口是否对应正确）
+
+python ms.py find
 ```
 
 检查 CAN 状态：
