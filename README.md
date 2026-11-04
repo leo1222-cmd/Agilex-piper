@@ -59,7 +59,7 @@ taught_full_grasp_poses.json     #示教数据文件，保存 ArUco 位姿、关
 - **[前期准备与验证](Documents/README1.md)** - 基础工具安装、Python 虚拟环境创建、PiPER SDK 安装、RealSense 相机依赖安装以及功能验证
 - **[机械臂主从控制详情](Documents/README2.md)** - 详细介绍piper机械臂主从控制流程
 - **[相机识别定位](Documents/README3.md)** - 详细介绍相机识别定位、夹爪夹取全流程
-- **[修改ID对应参数配置](Documents/README4.md)**-介绍修改ID对应参数配置的方法
+- **[修改ID对应参数配置](Documents/README4.md)** - 介绍修改ID对应参数配置的方法
 
 ## Quick Start
 
