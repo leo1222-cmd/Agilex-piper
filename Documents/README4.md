@@ -8,7 +8,7 @@
 cd ~/piper
 source ~/venvs/piper_dual/bin/activate
 
-python teach_grasp_select_can.py（可选择can口）
+python teach_grasp_select_can.py
 ```
 按流程保存好对应位姿
 
