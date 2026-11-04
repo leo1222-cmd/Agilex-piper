@@ -8,9 +8,24 @@
 cd ~/piper
 source ~/venvs/piper_dual/bin/activate
 
-python teach_grasp_select_can.py
+python teach_grasp_full_pose.py \
+  --id 0 \
+  --slave-can can1
 ```
-按流程保存好对应位姿
+具体流程：
+```
+主从把从臂移动到新的 ID0 夹取位
+↓
+确认夹爪与试剂位置正确
+↓
+保存
+↓
+覆盖 teach_reagent_grasp_pose_id0
+↓
+task_targets.json 仍保持：
+pose_name = teach_reagent_grasp_pose_id0
+```
+按流程走完，就会自动读取新的 ID0 夹取位置。
 
 ## 2、修改某个 ID 对应的放回位置
 比如修改ID0：
@@ -23,7 +38,7 @@ python teach_return_full_pose.py \
   --slave-can can1
 ```
 
-然后：
+具体流程：
 ```
 用主从移动到新的放回预位
 ↓
