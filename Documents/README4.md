@@ -1,58 +1,44 @@
 # 修改各ID对应参数配置（JSON文件）具体步骤——ID0作为示例
+改某个 ID 的夹取位置或放回位置，不用改总控代码，只需要重新示教对应 ID 的 pose，覆盖 JSON 里的记录就行。主要需示教：
+- 夹取位置：`pose_name`
+- 放回位置：`return_pose_name`
 
-## 1、保存 ID0 的固定抓取位
-
-### 姿态摆好以后不要再碰机械臂，执行：
+##1、修改某个 ID 对应夹取位置
 ```bash
 cd ~/piper
 source ~/venvs/piper_dual/bin/activate
 
-python teach_joint_endpose.py \
-  --slave-can can1 \
-  --pose-name teach_reagent_id0_grasp \
-  --out taught_full_grasp_poses.json
+python teach_grasp_select_can.py（可选择can口）
 ```
-从臂为can1，若从臂是 can0，则改为 --slave-can can0
-数值没有明显异常，然后输入y进行保存
+按流程保存好对应位姿
 
-### 保存以后马上执行下面这个检查：
+##2、修改某个 ID 对应的放回位置
+比如修改ID0：
 ```bash
-python - <<'PY'
-import json
+cd ~/piper
+source ~/venvs/piper_dual/bin/activate
 
-with open("taught_full_grasp_poses.json", "r") as f:
-    d = json.load(f)
-
-name = "teach_reagent_id0_grasp"
-
-print("\nexists =", name in d)
-
-if name in d:
-    r = d[name]
-
-    print("\nslave_joint_raw:")
-    print(r.get("slave_joint_raw"))
-
-    print("\nslave_endpose_raw:")
-    print(r.get("slave_endpose_raw"))
-
-    if "slave_joint_raw" in r:
-        print("\nJoint (deg):")
-        print([round(v / 1000.0, 3) for v in r["slave_joint_raw"]])
-
-    if "slave_endpose_raw" in r:
-        p = r["slave_endpose_raw"]
-
-        print("\nEndPose:")
-        print(
-            "XYZ mm =",
-            [round(v / 1000.0, 3) for v in p[:3]]
-        )
-        print(
-            "RPY deg =",
-            [round(v / 1000.0, 3) for v in p[3:]]
-        )
-PY
+python teach_return_full_pose.py \
+  --id 0 \
+  --slave-can can1
 ```
-正确结果应该同时存在：slave_joint_raw（MOVE_J 先把机械臂送到抓取附近）和slave_endpose_raw（到位以后检查实际 XYZ/RPY
-→ 必要时 MOVE_P 自动微调）
+
+然后：
+```
+用主从移动到新的放回预位
+↓
+试剂对准对应孔
+↓
+下端距离孔口约 10 mm
+↓
+按 Enter
+↓
+检查姿态
+↓
+输入 SAVE
+```
+因为脚本默认 pose 名是：
+```
+teach_reagent_return_pose_id0
+```
+所以重新 SAVE 后会直接覆盖 ID0 原来的放回位置，不需要再改总控。
