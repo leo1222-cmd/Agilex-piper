@@ -4,6 +4,7 @@
 - 放回位置：`return_pose_name`
 
 ## 1、修改某个 ID 对应夹取位置
+比如修改ID0：
 ```bash
 cd ~/piper
 source ~/venvs/piper_dual/bin/activate
