@@ -58,3 +58,14 @@ python teach_return_full_pose.py \
 teach_reagent_return_pose_id0
 ```
 所以重新 SAVE 后会直接覆盖 ID0 原来的放回位置，不需要再改总控。
+
+## 3、修改固定安全位
+运动机械臂到安全位，执行以下命令保存：
+```bash
+cd ~/piper
+
+source ~/venvs/piper_dual/bin/activate
+
+python teach_safe_pose.py
+```
+按提示流程操作即可
